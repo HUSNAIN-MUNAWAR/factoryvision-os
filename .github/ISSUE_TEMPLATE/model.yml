@@ -1,0 +1,6 @@
+name: Model contribution
+description: Propose a model adapter or weights
+body:
+  - type: textarea
+    attributes: {label: Model, licence, lineage and benchmark}
+    validations: {required: true}

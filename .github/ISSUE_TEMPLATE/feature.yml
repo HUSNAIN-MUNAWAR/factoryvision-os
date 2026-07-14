@@ -1,0 +1,9 @@
+name: Feature request
+description: Propose a tested FactoryVision capability
+body:
+  - type: textarea
+    attributes: {label: Industrial problem}
+    validations: {required: true}
+  - type: textarea
+    attributes: {label: Proposed implementation and evidence}
+    validations: {required: true}

@@ -1,0 +1,8 @@
+decision:
+  minimum_observed_frames: 3
+  minimum_positive_ratio: 0.55
+  minimum_mean_confidence: 0.60
+  minimum_anomaly_area: 80
+  uncertain_action: review
+  positive_action: reject
+  negative_action: pass

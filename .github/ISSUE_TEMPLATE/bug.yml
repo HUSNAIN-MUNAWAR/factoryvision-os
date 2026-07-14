@@ -1,0 +1,10 @@
+name: Bug report
+description: Report a reproducible problem
+body:
+  - type: textarea
+    id: repro
+    attributes: {label: Reproduction, description: Include commands, logs and sanitized inputs}
+    validations: {required: true}
+  - type: textarea
+    id: environment
+    attributes: {label: Environment, description: OS, hardware, Python/Node versions}

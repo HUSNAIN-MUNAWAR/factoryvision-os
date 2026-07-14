@@ -1,0 +1,9 @@
+name: Dataset request
+description: Request a dataset adapter with verified licence
+body:
+  - type: input
+    attributes: {label: Official dataset URL}
+    validations: {required: true}
+  - type: textarea
+    attributes: {label: Licence and redistribution evidence}
+    validations: {required: true}

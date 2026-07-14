@@ -1,0 +1,15 @@
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+.next/
+factoryvision.db
+artifacts/*
+!artifacts/screenshots/
+!artifacts/screenshots/**
+datasets/raw/
+.env

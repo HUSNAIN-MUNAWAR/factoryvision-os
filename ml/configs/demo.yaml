@@ -1,0 +1,9 @@
+seed: 7
+supervised:
+  type: logistic_pixel_classifier
+  pixels_per_image: 5000
+anomaly:
+  type: feature_memory
+  input_size: [96, 96]
+export:
+  targets: [joblib, onnx_optional, openvino_optional]

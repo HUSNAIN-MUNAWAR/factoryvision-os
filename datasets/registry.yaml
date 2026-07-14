@@ -1,0 +1,57 @@
+datasets:
+  steelds:
+    version: "official-current"
+    tasks: [object-detection, instance-segmentation, multi-object-tracking, material-classification]
+    license: {id: "CC-BY-4.0", commercial_use: true, redistribution: "subject to attribution and official dataset terms"}
+    source:
+      official_page: "https://zenodo.org/records/20271102"
+      download_url: "https://zenodo.org/records/20271102"
+      paper_url: "documented in docs/DATASETS.md"
+      repository_url: "https://github.com/MelanieNeubauer/SteelDS_Baseline"
+    integrity: {archive_sha256: "not-pinned-full-archive", expected_size_bytes: 67600000000}
+    adapter: "factoryvision.data.adapters:SteelSortingAdapter"
+    annotation_format: "YOLO text labels for boxes; masks/classes for instance segmentation"
+    split_policy: "sequence-aware"
+    local_storage_path: "datasets/raw/steelds"
+    preparation_status: "optional-not-downloaded-in-phase2-runtime"
+  visa:
+    version: "1.0"
+    tasks: [anomaly-detection, pixel-localization]
+    license: {id: "CC-BY-4.0", commercial_use: true, redistribution: "verify derived-media attribution"}
+    source:
+      official_page: "https://github.com/amazon-science/spot-diff"
+      download_url: "documented in docs/DATASET_LINKS.md"
+      paper_url: "documented in docs/DATASETS.md"
+      repository_url: "https://github.com/amazon-science/spot-diff"
+    integrity: {archive_sha256: "source-release-dependent", expected_size_bytes: 0}
+    adapter: "factoryvision.data.adapters:VisAAdapter"
+    annotation_format: "image and pixel masks"
+    split_policy: "official split"
+    local_storage_path: "datasets/raw/visa"
+    preparation_status: "optional-not-downloaded-in-phase2-runtime"
+  mvtec_ad:
+    version: "official-current"
+    tasks: [anomaly-detection, pixel-localization]
+    license: {id: "custom-noncommercial", commercial_use: false, redistribution: "restricted"}
+    source: {official_page: "https://www.mvtec.com/company/research/datasets/mvtec-ad", download_url: "official page", paper_url: "official page", repository_url: ""}
+    integrity: {archive_sha256: "source-release-dependent", expected_size_bytes: 0}
+    adapter: "factoryvision.data.adapters:MVTecAdapter"
+    annotation_format: "images and masks"
+    split_policy: "official split"
+    local_storage_path: "datasets/raw/mvtec_ad"
+    preparation_status: "optional-noncommercial-only"
+  steel_defects_roboflow:
+    version: "dataset-v2"
+    tasks: [object-detection]
+    license: {id: "CC-BY-4.0", commercial_use: true, redistribution: "subject to Roboflow export terms and attribution"}
+    source:
+      official_page: "https://universe.roboflow.com/hamdi-ali-akgungor/steel-defects-xbfez"
+      download_url: "manual Roboflow Universe export"
+      paper_url: ""
+      repository_url: ""
+    integrity: {archive_sha256: "user-export-dependent", expected_size_bytes: 0}
+    adapter: "factoryvision.data.adapters:RoboflowYoloAdapter"
+    annotation_format: "bounding boxes; export as YOLO/COCO/VOC from Roboflow"
+    split_policy: "Roboflow dataset version split"
+    local_storage_path: "datasets/raw/steel_defects_roboflow"
+    preparation_status: "optional-manual-download"
