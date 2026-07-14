@@ -1,6 +1,11 @@
 from pathlib import Path
+import pytest
+
 from factoryvision.cv.synthetic import generate_anomaly_dataset
-from factoryvision.cv.anomaly_autoencoder import AutoencoderAnomaly
+
+pytest.importorskip("torch")
+
+from factoryvision.cv.anomaly_autoencoder import AutoencoderAnomaly  # noqa: E402
 
 def test_autoencoder_trains_and_scores(tmp_path:Path):
     generate_anomaly_dataset(tmp_path/'a',count=8)

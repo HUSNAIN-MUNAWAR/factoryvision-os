@@ -1,12 +1,10 @@
 from __future__ import annotations
 from pathlib import Path
-from datetime import datetime,timedelta
-import json,os
+import json
 from .config import settings
 from .cv.synthetic import generate_dataset,generate_anomaly_dataset
 from .cv.supervised import PixelSegmentationModel
 from .cv.anomaly import FeatureMemoryAnomaly
-from .cv.anomaly_autoencoder import AutoencoderAnomaly
 from .cv.pipeline import run_video
 from .cv.export import export_pixel_classifier, benchmark_edge_backends
 from .db import init_db,SessionLocal
@@ -21,12 +19,19 @@ def run_demo(root:Path|None=None)->dict:
     generate_dataset(data/'conveyor'); generate_anomaly_dataset(data/'anomaly')
     images=sorted((data/'conveyor'/'images').glob('*.png')); masks=sorted((data/'conveyor'/'masks').glob('*.png'))
     split=int(len(images)*.7); seg=PixelSegmentationModel().fit(images[:split],masks[:split]); seg_path=models_dir/'pixel_segmentation.joblib'; seg.save(seg_path); seg_metrics=seg.evaluate(images[split:],masks[split:])
-    onnx_path=export_pixel_classifier(seg_path,models_dir/'pixel_segmentation.onnx')
-    edge_benchmark=benchmark_edge_backends(onnx_path,images[-1],artifacts/'benchmarks'/'edge_benchmark.json')
     normal=sorted((data/'anomaly'/'normal').glob('*.png')); abnormal=sorted((data/'anomaly'/'anomaly').glob('*.png'))
     anomaly=FeatureMemoryAnomaly().fit(normal[:18]); anomaly_path=models_dir/'feature_memory.joblib'; anomaly.save(anomaly_path); anomaly_metrics=anomaly.evaluate(normal[18:],abnormal)
-    autoencoder=AutoencoderAnomaly(); ae_history=autoencoder.fit(normal[:18],epochs=8); ae_path=models_dir/'tiny_autoencoder.pt'; autoencoder.save(ae_path,ae_history); ae_metrics=autoencoder.evaluate(normal[18:],abnormal)
-    summary=run_video(data/'conveyor'/'conveyor.mp4',seg_path,run_dir); summary['segmentation_metrics']=seg_metrics; summary['anomaly_metrics']={'feature_memory':anomaly_metrics,'autoencoder':ae_metrics,'comparison':{'winner_by_image_auroc':'feature_memory' if anomaly_metrics['image_auroc']>=ae_metrics['image_auroc'] else 'autoencoder'}}; summary['edge_benchmark']=edge_benchmark
+    try:
+        from .cv.anomaly_autoencoder import AutoencoderAnomaly
+        autoencoder=AutoencoderAnomaly(); ae_history=autoencoder.fit(normal[:18],epochs=8); ae_path=models_dir/'tiny_autoencoder.pt'; autoencoder.save(ae_path,ae_history); ae_metrics=autoencoder.evaluate(normal[18:],abnormal)
+    except ImportError as exc:
+        ae_metrics={'status':'unavailable','reason':str(exc),'install_extra':'torch'}
+    try:
+        onnx_path=export_pixel_classifier(seg_path,models_dir/'pixel_segmentation.onnx')
+        edge_benchmark=benchmark_edge_backends(onnx_path,images[-1],artifacts/'benchmarks'/'edge_benchmark.json')
+    except ImportError as exc:
+        edge_benchmark={'status':'unavailable','reason':str(exc),'install_extra':'edge'}
+    summary=run_video(data/'conveyor'/'conveyor.mp4',seg_path,run_dir); summary['segmentation_metrics']=seg_metrics; summary['anomaly_metrics']={'feature_memory':anomaly_metrics,'autoencoder':ae_metrics,'comparison':{'winner_by_image_auroc':'feature_memory' if ae_metrics.get('status')=='unavailable' or anomaly_metrics['image_auroc']>=ae_metrics['image_auroc'] else 'autoencoder'}}; summary['edge_benchmark']=edge_benchmark
     init_db(); db=SessionLocal(); tenant='demo-manufacturing'
     # Recreate deterministic demo records without relying on externally provisioned services.
     for table in (RejectEvent,Finding,InferenceJob,Report,Deployment,TrainingExperiment,DatasetVersion,ModelVersion,VisionModel,Camera,Batch,ProductionLine,Site,InspectionWorkflow,DriftAlert,AuditEvent,User): db.query(table).delete()

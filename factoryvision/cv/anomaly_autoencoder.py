@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pathlib import Path
-import json,random
+import random
 import cv2
 import numpy as np
 import torch

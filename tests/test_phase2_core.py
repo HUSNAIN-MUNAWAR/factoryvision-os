@@ -1,4 +1,3 @@
-from pathlib import Path
 from hashlib import sha256
 import numpy as np
 from factoryvision.integrations.contracts import IndustrialEvent

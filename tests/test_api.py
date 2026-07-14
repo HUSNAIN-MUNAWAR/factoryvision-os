@@ -1,4 +1,3 @@
-import os
 from fastapi.testclient import TestClient
 from factoryvision.db import init_db,SessionLocal
 from factoryvision.models import Site,User
