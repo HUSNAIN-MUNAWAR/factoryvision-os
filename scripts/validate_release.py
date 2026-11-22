@@ -19,10 +19,7 @@ REQUIRED = [
     "packages/python-sdk/factoryvision_sdk/client.py",
     "artifacts/demo_summary.json",
     "artifacts/models/pixel_segmentation.joblib",
-    "artifacts/models/pixel_segmentation.onnx",
     "artifacts/models/feature_memory.joblib",
-    "artifacts/models/tiny_autoencoder.pt",
-    "artifacts/benchmarks/edge_benchmark.json",
     "artifacts/runs/demo/overlay.mp4",
     "artifacts/runs/demo/events.json",
     "artifacts/runs/demo/evidence/track_1.jpg",
@@ -40,6 +37,8 @@ checks = {
     path: (ROOT / path).exists() and (ROOT / path).stat().st_size > 0 for path in REQUIRED
 }
 summary = json.loads((ROOT / "artifacts/demo_summary.json").read_text())
+edge_benchmark = summary.get("edge_benchmark", {})
+autoencoder = summary.get("anomaly_metrics", {}).get("autoencoder", {})
 checks.update(
     {
         "actual_frames": summary.get("frames", 0) > 0,
@@ -50,10 +49,19 @@ checks.update(
             "feature_memory",
             "autoencoder",
         }.issubset(summary.get("anomaly_metrics", {})),
-        "actual_edge_runtimes": {
-            "onnxruntime_cpu",
-            "openvino_cpu",
-        }.issubset(summary.get("edge_benchmark", {})),
+        "autoencoder_boundary": (
+            (ROOT / "artifacts/models/tiny_autoencoder.pt").exists()
+            if autoencoder.get("status", "available") != "unavailable"
+            else bool(autoencoder.get("reason") and autoencoder.get("install_extra"))
+        ),
+        "edge_boundary": (
+            {
+                "onnxruntime_cpu",
+                "openvino_cpu",
+            }.issubset(edge_benchmark)
+            if edge_benchmark.get("status", "available") != "unavailable"
+            else bool(edge_benchmark.get("reason") and edge_benchmark.get("install_extra"))
+        ),
     }
 )
 

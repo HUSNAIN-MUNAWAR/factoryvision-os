@@ -20,7 +20,7 @@ Date: 2026-07-14
 | Drift PSI calculation | Passed |
 | Camera freeze/quality detection | Passed |
 | Plugin example | Passed |
-| Existing ONNX Runtime/OpenVINO artifacts | Retained and release-manifest validated |
+| ONNX Runtime/OpenVINO edge artifacts | Optional; release validation accepts either measured runtimes or an explicit missing-extra boundary |
 | SBOM generation | Passed |
 | Source archive integrity | Verified after packaging |
 

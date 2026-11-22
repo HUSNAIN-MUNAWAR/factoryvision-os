@@ -108,7 +108,7 @@ Metrics are not hard-coded. Run `make demo` to regenerate `artifacts/demo_summar
 
 ## Edge exports
 
-Install `.[edge]` to regenerate the ONNX model and execute the CPU benchmark under ONNX Runtime and OpenVINO. Results are written to `artifacts/benchmarks/edge_benchmark.json`; they are machine-specific. The execution-provider boundary allows future CUDA/TensorRT adapters to share the same decision and evidence pipeline.
+Install `.[edge]` to regenerate the ONNX model and execute the CPU benchmark under ONNX Runtime and OpenVINO. Results are written to `artifacts/benchmarks/edge_benchmark.json`; they are machine-specific. If the optional extra is not installed, the demo records the missing dependency and release validation accepts that explicit boundary without claiming an edge benchmark. The execution-provider boundary allows future CUDA/TensorRT adapters to share the same decision and evidence pipeline.
 
 ## Security
 
