@@ -8,6 +8,7 @@ from factoryvision.mlops.drift import population_stability_index,summarize_drift
 from factoryvision.edge.agent import EdgeAgent,EdgeConfig
 from factoryvision.plugins.example_contamination import ContaminationRatioWorkflow
 from factoryvision.streams.health import CameraHealthMonitor
+from factoryvision.cv.quality import CameraHealthMonitor as PipelineCameraHealthMonitor
 
 def event(): return IndustrialEvent(organization='o',site='s',line='l',station='st',camera='c',batch='b',product='p',track='1',decision='reject',confidence=.91,finding_type='copper',model_version='2')
 def test_event_is_deterministic_and_opcua():
@@ -26,3 +27,7 @@ def test_edge_queue_model_install_and_rollback(tmp_path):
 def test_camera_health_and_plugin():
     monitor=CameraHealthMonitor(); blank=np.zeros((64,64,3),dtype=np.uint8); first=monitor.inspect(blank,25); second=monitor.inspect(blank,25); assert second['repeated_frame']; assert first['severity'] in {'warning','critical'}
     result=ContaminationRatioWorkflow().decide([{'class_name':'steel','area':90},{'class_name':'copper','area':10}]); assert result['action']=='reject'
+
+def test_pipeline_camera_health_exposes_alerts_contract():
+    monitor=PipelineCameraHealthMonitor(); result=monitor.assess(np.zeros((64,64,3),dtype=np.uint8),25)
+    assert isinstance(result['alerts'], list)
